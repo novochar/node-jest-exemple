@@ -1,0 +1,14 @@
+{
+  "name": "node-jest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "sucrase ./src -d ./dist --transforms imports"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "sucrase": "^3.16.0"
+  }
+}
