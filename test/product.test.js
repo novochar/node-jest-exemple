@@ -50,4 +50,73 @@ test("should update product", async () => {
     .put(`/products/${response.body.id}`)
     .send(updateProduct)
   expect(resposeUpdate.body).toMatchObject(updateProduct);
+});
+
+test("should not update product if not exist", async () => {
+  await request(app)
+    .put('/products/4354645644')
+    .expect(400);
+});
+
+test('should not be possible delete product if not exists', async() => {
+  await request(app)
+  .delete('/products/4354645644')
+  .expect(400); 
+});
+
+test("should remove product if exist and return status 204", async() => {
+  const response = await request(app)
+    .post('/products')
+    .send(products[0]);
+  
+  await request(app)
+  .delete(`/products/${response.body.code}`)
+  .expect(204); 
+})
+
+test("should be possible list all products", async() => {
+  const  response = await request(app)
+    .post('/products')
+    .send(products[0]);
+
+  const responseGet = await request(app)
+    .get('/products')
+  
+  expect(responseGet.body).toHaveLength(1);
+});
+
+test('should remove all product by code', async () => {
+  await request(app)
+    .post('/products')
+    .send(products[0]);
+  
+  await request(app)
+    .post('/products')
+    .send(products[0]);
+  
+  await request(app)
+    .post('/products')
+    .send(products[1]);
+
+  await request(app)
+    .delete(`/products/${products[0].code}`)
+  
+  const responseAll = await request(app)
+    .get('/products');
+  
+  expect(responseAll.body).toHaveLength(1);
+})
+
+test('should be possible love a product', async () => {
+  const response = await request(app)
+    .post('/products')
+    .send(products[0]);
+  
+  const responseLove = await request(app)
+    .post(`/products/${response.body.code}/love`)
+    .send(response.body)
+  
+  expect(responseLove.body).toMatchObject({
+    lovers: 1
+  })
 })
